@@ -16,7 +16,6 @@
 		return destination;
 	}
 
-
 	public Position GetOrigin()
 	{
 		return origin;

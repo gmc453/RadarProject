@@ -1,4 +1,6 @@
-﻿public class Position
+﻿using System;
+
+public class Position
 {
 	private double xPosition, yPosition;
 
@@ -21,6 +23,28 @@
 	{
 		xPosition += deltaX;
 		yPosition += deltaY;
+	}
+
+	static public double CalculateHeading(Position a,Position b) {
+		double x = b.xPosition - a.xPosition;
+		double y = b.yPosition - a.yPosition;
+
+		double heading = Math.Abs(Math.Atan2(y, x) - Math.PI)-(Math.PI/2);
+
+        if (heading<0)
+        {
+			heading = 2 * Math.PI - heading;
+        }
+
+		return heading;
+	}
+
+	static public double CalculateDistance(Position a, Position b)
+	{
+		double x = b.xPosition - a.xPosition;
+		double y = b.yPosition - a.yPosition;
+
+		return Math.Sqrt(y*y+x*x);
 	}
 }
 
