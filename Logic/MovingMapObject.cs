@@ -20,19 +20,21 @@ public class MovingMapObject : MapObject
 
 	private Status status = Status.Safe;
 
+	private static Random random = new Random();
+
 	public MovingMapObject(String name, Position position, double speed, double heading, double altitude, double acceleration, double climbRate, double turnRate) : base(name, position)
 	{
 		this.speed = speed;
-		this.heading = heading;
+		this.heading = heading;//Position.CalculateHeading(position,new Position(50,50));
 		this.altitude = altitude;
 		this.acceleration = acceleration;
 		this.climbRate = climbRate;
 		this.turnRate = turnRate;
 
-		Random random = new Random();
+		//Random random = new Random();
 
-		route.Push(new RouteSegment(position,new Position(random.Next(25,75), random.Next(25, 75)),speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));
-		route.Push(new RouteSegment(route.Peek().GetDestination(), new Position(random.Next(0,1) * 100, random.Next(0, 1)*100),speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));
+		route.Push(new RouteSegment(new Position(random.Next(25, 75), random.Next(25, 75)), new Position(random.Next(0,2) * 100, random.Next(0, 2)*100),speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));
+		route.Push(new RouteSegment(position, route.Peek().GetOrigin(), speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));
 	}
 
 	public void SetNewRoute(Stack<RouteSegment> newRoute) {
@@ -62,10 +64,20 @@ public class MovingMapObject : MapObject
 		return speed;
 	}
 
-	public void Simulate(double timeDelta) {
+	public Stack<RouteSegment> GetRoute() {
+		return route;
+	}
 
-		if (Position.CalculateHeading(GetPosition(), route.Peek().GetDestination()) < 3.0) {
+	public void Simulate(double timeDelta) {
+		if (route.Count == 0)
+		{
+			return;
+		}
+		if (Position.CalculateDistance(GetPosition(), route.Peek().GetDestination()) < 6.0) {
 			route.Pop();
+			if (route.Count == 0) {
+				return;
+			}
 		}
 
 		RouteSegment segment = route.Peek();
@@ -76,17 +88,39 @@ public class MovingMapObject : MapObject
 		{
 			heading = targetHeading;
 		}
-		else {
-			heading += turnRate * timeDelta*Math.Sign(heading - targetHeading); 
-		}
 
+		else 
+		{
+			if (Math.Abs(heading - targetHeading) > Math.PI)
+			{
+				if (heading > Math.PI)
+				{
+					targetHeading += Math.PI * 2;
+				}
+				else
+				{
+					targetHeading -= Math.PI * 2;
+				}
+			}
+			heading += turnRate * timeDelta * -Math.Sign(heading - targetHeading);
+		}
+		
+			
+		
+
+		if (heading < 0) {
+			heading += 2 * Math.PI;
+		} else if (heading>Math.PI*2) {
+			heading %= Math.PI;
+		}
+		
 		if (Math.Abs(speed - segment.GetTargetSpeed()) < acceleration * timeDelta)
 		{
 			speed = segment.GetTargetSpeed();
 		}
 		else
 		{
-			speed += acceleration * timeDelta * Math.Sign(speed - segment.GetTargetSpeed());
+			speed += acceleration * timeDelta * -Math.Sign(speed - segment.GetTargetSpeed());
 		}
 
 		if (Math.Abs(altitude - segment.GetTargetAltitude()) < climbRate * timeDelta)
@@ -95,10 +129,10 @@ public class MovingMapObject : MapObject
 		}
 		else
 		{
-			altitude += climbRate * timeDelta * Math.Sign(speed - segment.GetTargetAltitude());
+			altitude += climbRate * timeDelta * -Math.Sign(altitude - segment.GetTargetAltitude());
 		}
 
-		position.Tranlate(Math.Sin(targetHeading) * speed * timeDelta, Math.Sin(targetHeading)*speed*timeDelta);
+		position.Tranlate(Math.Sin(heading) * speed * timeDelta, Math.Cos(heading) *speed*timeDelta);
 	}
 }
 

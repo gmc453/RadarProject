@@ -6,6 +6,8 @@ public class Map
 	private List<MapObject> staticObjects = new List<MapObject>();
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
 
+	Random random = new Random();
+
 	public void Simulate(double timeDelta) {
 		foreach (MovingMapObject obj in movingObjects) {
 			obj.Simulate(timeDelta);
@@ -15,6 +17,11 @@ public class Map
 	public void AddStaticObject(MapObject mapObject)
 	{
 		staticObjects.Add(mapObject);
+	}
+
+	public List<MapObject> GetStaticObject()
+	{
+		return staticObjects;
 	}
 
 	public void RemoveStaticObject(MapObject mapObject)
@@ -28,6 +35,11 @@ public class Map
 		movingObjects.Add(mapObject);
 	}
 
+	public List<MovingMapObject> GetMovingObjects()
+	{
+		return movingObjects;
+	}
+
 	public void RemoveMovingObject(MovingMapObject mapObject)
 	{
 		movingObjects.Remove(mapObject);
@@ -35,22 +47,22 @@ public class Map
 
 	public void AddRandomMovingObject()
 	{
-		Random random = new Random();
+	
 		int randomNumber = random.Next() % 4;
 
 		MovingMapObject newObject;
 		switch (randomNumber) {
 			case 0:
-				newObject = new Glider((random.Next() % 1000).ToString(), new Position(0, random.NextDouble() % 100), 100, Math.PI / 2, 10000);
+				newObject = new Glider((random.Next() % 1000).ToString(), new Position(0, random.NextDouble() * 100), 4, Math.PI / 2, 10000);
 				break;
 			case 1:
-				newObject = new Airplane((random.Next() % 1000).ToString(), new Position(random.NextDouble() % 100, 0), 250, 0, 30000);
+				newObject = new Airplane((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, 0), 11, 0, 30000);
 				break;
 			case 2:
-				newObject = new Helicopter((random.Next() % 1000).ToString(), new Position(100, random.NextDouble() % 100), 50, 3*Math.PI / 4, 5000);
+				newObject = new Helicopter((random.Next() % 1000).ToString(), new Position(100, random.NextDouble() * 100), 6, 3*Math.PI / 4, 5000);
 				break;
 			default:
-				newObject = new Balloon((random.Next() % 1000).ToString(), new Position(random.NextDouble() % 100, 100), 10, Math.PI, 2000);
+				newObject = new Balloon((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, 100), 2, Math.PI, 2000);
 				break;
 		}
 

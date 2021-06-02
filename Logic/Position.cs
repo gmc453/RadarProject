@@ -33,7 +33,7 @@ public class Position
 
         if (heading<0)
         {
-			heading = 2 * Math.PI - heading;
+			heading = 2 * Math.PI + heading;
         }
 
 		return heading;
