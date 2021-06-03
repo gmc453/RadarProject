@@ -25,13 +25,11 @@ public class MovingMapObject : MapObject
 	public MovingMapObject(String name, Position position, double speed, double heading, double altitude, double acceleration, double climbRate, double turnRate) : base(name, position)
 	{
 		this.speed = speed;
-		this.heading = heading;//Position.CalculateHeading(position,new Position(50,50));
+		this.heading = heading;
 		this.altitude = altitude;
 		this.acceleration = acceleration;
 		this.climbRate = climbRate;
 		this.turnRate = turnRate;
-
-		//Random random = new Random();
 
 		route.Push(new RouteSegment(new Position(random.Next(25, 75), random.Next(25, 75)), new Position(random.Next(0,2) * 100, random.Next(0, 2)*100),speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));
 		route.Push(new RouteSegment(position, route.Peek().GetOrigin(), speed*(1+(random.NextDouble()-0.5f)/5), altitude * (1 + (random.NextDouble() - 0.5f) / 5)));

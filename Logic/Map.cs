@@ -10,7 +10,31 @@ public class Map
 
 	public void Simulate(double timeDelta) {
 		foreach (MovingMapObject obj in movingObjects) {
-			obj.Simulate(timeDelta);
+            if (obj.GetStatus()!=Status.Collided)
+			{
+				obj.Simulate(timeDelta);
+			}
+		}
+
+		foreach (MovingMapObject objA in movingObjects)
+		{
+			foreach (MovingMapObject objB in movingObjects)
+			{
+				if (objA!=objB) {
+					if (Position.CalculateHeading(objA.GetPosition(), objB.GetPosition()) < 1.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 100)
+					{
+						objA.SetStatus(Status.InDanger);
+					}
+					else if (Position.CalculateHeading(objA.GetPosition(), objB.GetPosition()) < 10.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 2000)
+					{
+						objA.SetStatus(Status.Collided);
+					}
+					else
+					{
+						objA.SetStatus(Status.Safe);
+					}
+				}
+			}
 		}
 	}
 
