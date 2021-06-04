@@ -6,6 +6,7 @@ public enum Status
 	Safe, InDanger, Collided
 }
 
+[Serializable()]
 public class MovingMapObject : MapObject
 {
 	private double speed;
