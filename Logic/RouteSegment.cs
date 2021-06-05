@@ -1,4 +1,7 @@
-﻿public class RouteSegment {
+﻿using System;
+
+[Serializable()]
+public class RouteSegment {
 	private double targetSpeed;
 	private double targetAltitude;
 	private Position origin;

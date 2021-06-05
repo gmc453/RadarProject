@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+[Serializable()]
 public class Map
 {
 	private List<MapObject> staticObjects = new List<MapObject>();
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
-
+	const string FileSO = "configSO.bin";
+	const string FileMO = "configMO.bin";
 	Random random = new Random();
 
 	public void Simulate(double timeDelta) {
@@ -98,6 +101,34 @@ public class Map
 
 		movingObjects.Add(newObject);
 	}
+
+	public void Save(){
+		Stream configSaveMO = File.Create(FileMO);
+		Stream configSaveSO = File.Create(FileSO);
+		BinaryFormatter serializer = new BinaryFormatter();
+		serializer.Serialize(configSaveMO, movingObjects);
+		serializer.Serialize(configSaveSO, staticObjects);
+		configSaveSO.Close();
+		configSaveMO.Close();
+	}
+
+	public void Load(){
+	if(File.Exists(FileMO)){
+			Stream configMO = File.OpenRead(FileMO);
+			BinaryFormatter deserializer = new BinaryFormatter();
+			movingObjects = (List<MovingMapObject>)deserializer.Deserialize(configMO);
+			configMO.Close();
+		}
+
+		if(File.Exists(FileSO)){
+			Stream configSO = File.OpenRead(FileSO);
+			BinaryFormatter deserializer = new BinaryFormatter();
+			staticObjects = (List<MapObject>)deserializer.Deserialize(configSO);
+			configSO.Close();
+		}
+	}
+
+
 }
 
 

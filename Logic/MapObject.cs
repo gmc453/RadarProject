@@ -1,6 +1,7 @@
 ﻿
 using System;
 
+[Serializable()]
 public class MapObject {
 	protected String name;
 	protected Position position;
