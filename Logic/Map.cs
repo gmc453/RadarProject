@@ -16,27 +16,32 @@ public class Map
 			}
 		}
 
+
 		foreach (MovingMapObject objA in movingObjects)
 		{
+			objA.SetStatus(Status.Safe);
 			foreach (MovingMapObject objB in movingObjects)
 			{
-				if (objA!=objB) {
-					if (Position.CalculateHeading(objA.GetPosition(), objB.GetPosition()) < 1.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 100)
-					{
-						objA.SetStatus(Status.InDanger);
-					}
-					else if (Position.CalculateHeading(objA.GetPosition(), objB.GetPosition()) < 10.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 2000)
+				if (!objA.Equals(objB))
+				{
+					if (Position.CalculateDistance(objA.GetPosition(), objB.GetPosition()) < 1.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 100)
 					{
 						objA.SetStatus(Status.Collided);
+
 					}
-					else
+					else if (Position.CalculateDistance(objA.GetPosition(), objB.GetPosition()) < 10.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 2000)
 					{
-						objA.SetStatus(Status.Safe);
+						if (objA.GetStatus() == Status.Safe)
+						{
+							objA.SetStatus(Status.InDanger);
+						}
 					}
 				}
 			}
 		}
 	}
+		
+	
 
 	public void AddStaticObject(MapObject mapObject)
 	{
