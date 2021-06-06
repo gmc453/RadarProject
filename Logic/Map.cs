@@ -105,11 +105,11 @@ public class Map
 
 	public void Save(string fileName)
 	{
-		Stream configSaveMO = File.Create(fileName);
+		Stream config = File.Create(fileName);
 		BinaryFormatter serializer = new BinaryFormatter();
 		try
 		{
-			serializer.Serialize(configSaveMO, this);
+			serializer.Serialize(config, this);
 		}
 		catch (SerializationException e)
 		{
@@ -118,18 +118,8 @@ public class Map
 		}
 		finally
 		{
-			configSaveMO.Close();
+			config.Close();
 		}
-
-		/*
-		Stream configSaveMO = File.Create(FileMO);
-		Stream configSaveSO = File.Create(FileSO);
-		BinaryFormatter serializer = new BinaryFormatter();
-		serializer.Serialize(configSaveMO, movingObjects);
-		serializer.Serialize(configSaveSO, staticObjects);
-		configSaveSO.Close();
-		configSaveMO.Close();
-		*/
 	}
 
 	public void Load(string fileName)
@@ -137,21 +127,20 @@ public class Map
 		Map _map = new Map();
 		if (File.Exists(fileName))
 		{
-			Stream configMO = File.OpenRead(fileName);
+			Stream config = File.OpenRead(fileName);
 			BinaryFormatter deserializer = new BinaryFormatter();
 			try
 			{
-				_map = (Map)deserializer.Deserialize(configMO);
-
+				_map = (Map)deserializer.Deserialize(config);
 			}
 			catch (SerializationException e)
 			{
 				Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+				throw;
 			}
 			finally
 			{
-				configMO.Close();
-
+				config.Close();
 			}
 			this.movingObjects = _map.movingObjects;
 			this.staticObjects = _map.staticObjects;
