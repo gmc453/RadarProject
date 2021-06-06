@@ -8,27 +8,43 @@ public class Map
 {
 	private List<MapObject> staticObjects = new List<MapObject>();
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
-	const string FileSO = "configSO.bin";
-	const string FileMO = "configMO.bin";
 	Random random = new Random();
 
-	public void Simulate(double timeDelta) {
-		foreach (MovingMapObject obj in movingObjects) {
-            if (obj.GetStatus()!=Status.Collided)
+	public void Simulate(double timeDelta)
+	{
+		List<MovingMapObject> objectsToRemove = new List<MovingMapObject>();
+
+		foreach (MovingMapObject obj in movingObjects)
+		{
+			if (obj.GetStatus() != Status.Collided)
 			{
 				obj.Simulate(timeDelta);
 			}
+			if (obj.GetPosition().GetXPosition() < 0 || obj.GetPosition().GetXPosition() > 100)
+			{
+				objectsToRemove.Add(obj);
+			}
+			else if (obj.GetPosition().GetYPosition() < 0 || obj.GetPosition().GetYPosition() > 100)
+			{
+				objectsToRemove.Add(obj);
+			}
+		}
+
+		foreach (MovingMapObject obj in objectsToRemove)
+		{
+			movingObjects.Remove(obj);
 		}
 
 		foreach (MovingMapObject objA in movingObjects)
 		{
-			if (objA.GetStatus()!=Status.Collided) { 
+			if (objA.GetStatus() != Status.Collided)
+			{
 				objA.SetStatus(Status.Safe);
 			}
 
 			foreach (MovingMapObject objB in movingObjects)
 			{
-				if (!objA.Equals(objB) && objA.GetStatus()!= Status.Collided)
+				if (!objA.Equals(objB) && objA.GetStatus() != Status.Collided)
 				{
 					double distance = Position.CalculateDistance(objA.GetPosition(), objB.GetPosition());
 					double altitudeDifference = Math.Abs(objA.GetAltitude() - objB.GetAltitude());
@@ -40,14 +56,14 @@ public class Map
 					}
 					else if (distance < 10.0 && altitudeDifference < 2000 && objA.GetStatus() == Status.Safe)
 					{
-						objA.SetStatus(Status.InDanger);	
+						objA.SetStatus(Status.InDanger);
 					}
 				}
 			}
 		}
 	}
-		
-	
+
+
 
 	public void AddStaticObject(MapObject mapObject)
 	{
