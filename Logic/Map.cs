@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 [Serializable()]
 public class Map
 {
@@ -102,7 +103,25 @@ public class Map
 		movingObjects.Add(newObject);
 	}
 
-	public void Save(){
+	public void Save(string fileName)
+	{
+		Stream configSaveMO = File.Create(fileName);
+		BinaryFormatter serializer = new BinaryFormatter();
+		try
+		{
+			serializer.Serialize(configSaveMO, this);
+		}
+		catch (SerializationException e)
+		{
+			Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+			throw;
+		}
+		finally
+		{
+			configSaveMO.Close();
+		}
+
+		/*
 		Stream configSaveMO = File.Create(FileMO);
 		Stream configSaveSO = File.Create(FileSO);
 		BinaryFormatter serializer = new BinaryFormatter();
@@ -110,23 +129,36 @@ public class Map
 		serializer.Serialize(configSaveSO, staticObjects);
 		configSaveSO.Close();
 		configSaveMO.Close();
+		*/
 	}
 
-	public void Load(){
-	if(File.Exists(FileMO)){
-			Stream configMO = File.OpenRead(FileMO);
+	public void Load(string fileName)
+	{
+		Map _map = new Map();
+		if (File.Exists(fileName))
+		{
+			Stream configMO = File.OpenRead(fileName);
 			BinaryFormatter deserializer = new BinaryFormatter();
-			movingObjects = (List<MovingMapObject>)deserializer.Deserialize(configMO);
-			configMO.Close();
-		}
+			try
+			{
+				_map = (Map)deserializer.Deserialize(configMO);
 
-		if(File.Exists(FileSO)){
-			Stream configSO = File.OpenRead(FileSO);
-			BinaryFormatter deserializer = new BinaryFormatter();
-			staticObjects = (List<MapObject>)deserializer.Deserialize(configSO);
-			configSO.Close();
+			}
+			catch (SerializationException e)
+			{
+				Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+			}
+			finally
+			{
+				configMO.Close();
+
+			}
+			this.movingObjects = _map.movingObjects;
+			this.staticObjects = _map.staticObjects;
+
 		}
 	}
+
 
 
 }
