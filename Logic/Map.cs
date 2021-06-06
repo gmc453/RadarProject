@@ -19,25 +19,27 @@ public class Map
 			}
 		}
 
-
 		foreach (MovingMapObject objA in movingObjects)
 		{
-			objA.SetStatus(Status.Safe);
+			if (objA.GetStatus()!=Status.Collided) { 
+				objA.SetStatus(Status.Safe);
+			}
+
 			foreach (MovingMapObject objB in movingObjects)
 			{
-				if (!objA.Equals(objB))
+				if (!objA.Equals(objB) && objA.GetStatus()!= Status.Collided)
 				{
-					if (Position.CalculateDistance(objA.GetPosition(), objB.GetPosition()) < 1.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 100)
+					double distance = Position.CalculateDistance(objA.GetPosition(), objB.GetPosition());
+					double altitudeDifference = Math.Abs(objA.GetAltitude() - objB.GetAltitude());
+
+					if (distance < 1.0 && altitudeDifference < 100)
 					{
 						objA.SetStatus(Status.Collided);
-
+						objB.SetStatus(Status.Collided);
 					}
-					else if (Position.CalculateDistance(objA.GetPosition(), objB.GetPosition()) < 10.0 && Math.Abs(objA.GetAltitude() - objB.GetAltitude()) < 2000)
+					else if (distance < 10.0 && altitudeDifference < 2000 && objA.GetStatus() == Status.Safe)
 					{
-						if (objA.GetStatus() == Status.Safe)
-						{
-							objA.SetStatus(Status.InDanger);
-						}
+						objA.SetStatus(Status.InDanger);	
 					}
 				}
 			}
