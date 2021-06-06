@@ -8,6 +8,7 @@ public class Map
 {
 	private List<MapObject> staticObjects = new List<MapObject>();
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
+	[field: NonSerialized()]
 	Random random = new Random();
 
 	public void Simulate(double timeDelta)
