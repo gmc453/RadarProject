@@ -69,6 +69,7 @@
     <Compile Include="FormView.Designer.cs">
       <DependentUpon>FormView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logic\Exceptions.cs" />
     <Compile Include="Logic\Glider.cs" />
     <Compile Include="Logic\Helicopter.cs" />
     <Compile Include="Logic\Map.cs" />
