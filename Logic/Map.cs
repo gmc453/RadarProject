@@ -12,13 +12,14 @@ public class Map
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
 	[field: NonSerialized()]
 	Random random = new Random();
+	[field: NonSerialized()]
+	int lastId = 1;
 
 	public void Simulate(double timeDelta)
 	{
 		//Symulacja porzuszania się statków powietrznych
 
 		List<MovingMapObject> objectsToRemove = new List<MovingMapObject>();
-		if(movingObjects.Count() == 0) throw new MovingObjectExceptions("There's no object on map");
 		foreach (MovingMapObject obj in movingObjects)
 		{
 			if (obj.GetStatus() != Status.Collided)
@@ -109,16 +110,16 @@ public class Map
 		MovingMapObject newObject;
 		switch (randomNumber) {
 			case 0:
-				newObject = new Glider((random.Next() % 1000).ToString(), new Position(0, random.NextDouble() * 100), 4, Math.PI / 2, 10000);
+				newObject = new Glider((lastId +=1+ random.Next() % 13).ToString(), new Position(0, random.NextDouble() * 100), 4, Math.PI / 2, 10000);
 				break;
 			case 1:
-				newObject = new Airplane((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, 0), 11, 0, 30000);
+				newObject = new Airplane((lastId += 1 + random.Next() % 13).ToString(), new Position(random.NextDouble() * 100, 0), 11, 0, 30000);
 				break;
 			case 2:
-				newObject = new Helicopter((random.Next() % 1000).ToString(), new Position(100, random.NextDouble() * 100), 6, 3*Math.PI / 4, 5000);
+				newObject = new Helicopter((lastId += 1 + random.Next() % 13).ToString(), new Position(100, random.NextDouble() * 100), 6, 3*Math.PI / 4, 5000);
 				break;
 			default:
-				newObject = new Balloon((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, 100), 2, Math.PI, 2000);
+				newObject = new Balloon((lastId += 1 + random.Next() % 13).ToString(), new Position(random.NextDouble() * 100, 100), 2, Math.PI, 2000);
 				break;
 		}
 
