@@ -121,6 +121,12 @@ public class Map
 		movingObjects.Add(newObject);
 	}
 
+	public void AddRandomStaticObject()
+	{
+		staticObjects.Add(new MapObject((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, random.NextDouble() * 100)));
+	}
+
+
 	public void Save(string fileName)
 	{
 		Stream config = File.Create(fileName);
