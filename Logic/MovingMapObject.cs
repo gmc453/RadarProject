@@ -79,9 +79,12 @@ public class MovingMapObject : MapObject
 				return;
 			}
 		}
+
 		if (route.Count != 0)
 		{
 			Position nextPosition = route[0];
+
+			//Wyznaczanie nowego kierunku lotu zgodnie z czasem jaki upłyną od ostatniej symulacji
 
 			double targetHeading = Position.CalculateHeading(GetPosition(), nextPosition);
 
@@ -115,8 +118,8 @@ public class MovingMapObject : MapObject
 				heading %= Math.PI;
 			}
 		}
-		
 
+		//Przesuwanie statku na mapie zgodnie z wyznaczonym kierunkiem
 		position.Tranlate(Math.Sin(heading) * speed * timeDelta, Math.Cos(heading) *speed*timeDelta);
 	}
 }

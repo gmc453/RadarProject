@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 namespace ProjektPoRadar
 {
     public partial class FormView : Form
@@ -15,26 +16,24 @@ namespace ProjektPoRadar
 
         private bool drawRoute = false;
 
+        private bool isPaused = false;
+
         public FormView()
         {
             InitializeComponent();
-
-            for(int i = 0; i < 10 ; i++)
-            {
-                map.AddRandomMovingObject();
-            }
-            foreach (MovingMapObject obj in map.GetMovingObjects())
-            {
-                listBox1.Items.Add(obj.GetName().ToString());
-            }
+            
+            generateNewMap();
         }
 
         private void FormView_Paint(object sender, PaintEventArgs e)
         {
-            map.Simulate(0.05);
+            if (!isPaused) { 
+                map.Simulate(0.05);
+            }
 
             List<String> movingObjtoRemove = new List<String>();
 
+            //Aktualizowanie listy obiektów na mapie
             foreach (String str in listBox1.Items)
             {
                 bool exist=false;
@@ -52,10 +51,14 @@ namespace ProjektPoRadar
                 listBox1.Items.Remove(str);
             }
 
+            //Rysowanie obiektów statycznych
+            foreach (MapObject obj in map.GetStaticObject())
+            {
+                e.Graphics.FillRectangle(Brushes.Black, (float)obj.GetPosition().GetXPosition() * 5 + 18, (float)obj.GetPosition().GetYPosition() * 5 + 18, 3, 3);
+                e.Graphics.DrawString(obj.GetName(), SystemFonts.DefaultFont, Brushes.Black, (float)obj.GetPosition().GetXPosition() * 5 + 20, (float)obj.GetPosition().GetYPosition() * 5 + 20);
+            }
 
-
-        
-
+            //Rysowanie obiektów dynamicznych
             foreach (MovingMapObject obj in map.GetMovingObjects())
             {
                 Brush Color;
@@ -74,30 +77,31 @@ namespace ProjektPoRadar
                 }
                 if(obj is Glider)
                 {
-                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 15, 15);
+                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5+18, (float)obj.GetPosition().GetYPosition() * 5 + 18, 15, 15);
                 }
                 if (obj is Balloon)
                 {
-                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 15, 15);
+                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5 + 18, (float)obj.GetPosition().GetYPosition() * 5 + 18, 15, 15);
                 }
                 if (obj is Helicopter)
                 {
-                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 10, 15);
+                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5 + 18, (float)obj.GetPosition().GetYPosition() * 5 + 18, 10, 15);
                 }
                 if (obj is Airplane)
                 {
-                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 10, 15);
+                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5 + 18, (float)obj.GetPosition().GetYPosition() * 5 + 18, 10, 15);
                 }
-
+                e.Graphics.DrawString(obj.GetName(), SystemFonts.DefaultFont, Color, (float)obj.GetPosition().GetXPosition() * 5 + 34, (float)obj.GetPosition().GetYPosition() * 5 + 12);
             }
 
+            //Wyświetlanie informacji o wybranym obiekcie 
             foreach (MovingMapObject obj in map.GetMovingObjects())
             {
                 if (listBox1.SelectedItem != null)
                 {
                     if (obj.GetName() == listBox1.SelectedItem.ToString())
                     {
-                        richTextBox1.Text = "Name: " + obj.GetName() + "\nX:\n" + obj.GetPosition().GetXPosition() + "\nY:\n" + obj.GetPosition().GetYPosition() + "\nStatus: " + obj.GetStatus();
+                        richTextBox1.Text = "Name: " + obj.GetName() + "\nX:" + obj.GetPosition().GetXPosition() + "\nY:" + obj.GetPosition().GetYPosition() + "\nStatus: " + obj.GetStatus()+"\nAltitiude: "+obj.GetAltitude();
                     }
                 }
             }
@@ -108,33 +112,65 @@ namespace ProjektPoRadar
             Invalidate();
         }
 
-        private void FormView_MouseMove(object sender, MouseEventArgs e)
+        private void FormView_MouseClick(object sender, MouseEventArgs e)
         {
-            //listBox1.Text = " X: " + e.X + " Y: " + e.Y;
+            //Odczytywanie pozycji na którą klikną użytkownik  
+            if (drawRoute == true)
+            {
+                if (e.X<18||e.X>518||e.Y<18||e.Y>518) {
+                    return;
+                }
+
+                Position listNewRoutes = new Position((e.X-18)/5, (e.Y - 18) / 5);
+
+                temporaryPositionRoute.Add(listNewRoutes);
+
+                newRouteList.Items.Add("X: " + listNewRoutes.GetXPosition() + "Y: " + listNewRoutes.GetYPosition());
+            }
         }
 
-        private void FormView_MouseUp(object sender, MouseEventArgs e)
-        {
-            //listBox1.Text = " X: " + e.X + " Y: " + e.Y;
+        private void loadButton_Click(object sender, EventArgs e)
+        { 
+            //wyświetlanie okienka do otwarcia pliku
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.DefaultExt = "map";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                map.Load(openFileDialog.FileName);
+
+            }
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void saveButton_Click(object sender, EventArgs e)
         {
+            //wyświetlanie okienka do zapisu pliku
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = "map";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                map.Save(saveFileDialog.FileName);
 
+            }
         }
 
-        private void FormView_Load(object sender, EventArgs e)
+        private void startNewRouteButton_Click(object sender, EventArgs e)
         {
+            //zaczęcie tworzenia nowej trasy
+            drawRoute = true;
 
+            drawingBoxOnOf.Visible = true;
+
+            temporaryPositionRoute.Clear();
         }
 
-        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void applyNewRouteButton_Click(object sender, EventArgs e)
         {
+            //zapisywanie nowo wybranej trasy
+            drawRoute = false;
 
-        }
 
-        private void Change_direction_Click(object sender, EventArgs e)
-        {
+            drawingBoxOnOf.Visible = false;
+
             positionRoute = temporaryPositionRoute;
 
             foreach (MovingMapObject obj in map.GetMovingObjects())
@@ -148,49 +184,44 @@ namespace ProjektPoRadar
                 }
             }
 
-            Change_direction.Enabled = false;
 
             newRouteList.Items.Clear();
         }
 
-        private void FormView_MouseClick(object sender, MouseEventArgs e)
+        private void pauseButton_Click(object sender, EventArgs e)
         {
-            if(drawRoute == true)
+            isPaused = true;
+        }
+
+        private void resumeButton_Click(object sender, EventArgs e)
+        {
+            isPaused = false;
+        }
+
+        private void generateNewMapButton_Click(object sender, EventArgs e)
+        {
+            generateNewMap();
+        }
+
+        private void generateNewMap() {
+            //generowanie nowej mapy
+            map = new Map();
+            for (int i = 0; i < 10; i++)
             {
-                Position listNewRoutes = new Position(e.X/5, e.Y/5);
-
-                temporaryPositionRoute.Add(listNewRoutes);
-
-                newRouteList.Items.Add("X: " + listNewRoutes.GetXPosition() + "Y: " + listNewRoutes.GetYPosition());
+                map.AddRandomMovingObject();
             }
-        }
 
-        private void startButton_Click(object sender, EventArgs e)
-        {
-            drawRoute = true;
-
-            drawingBoxOnOf.Visible = true;
-
-            temporaryPositionRoute.Clear();
-        }
-
-        private void stopButton_Click(object sender, EventArgs e)
-        {
-            drawRoute = false;
-
-            Change_direction.Enabled = true;
-
-            drawingBoxOnOf.Visible = false;
-        }
-
-        private void newRouteList_SelectedIndexChanged(object sender, EventArgs e)
-        {
+            for (int i = 0; i < 4; i++)
+            {
+                map.AddRandomStaticObject();
+            }
+            listBox1.Items.Clear();
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                listBox1.Items.Add(obj.GetName().ToString());
+            }
 
         }
 
-        private void Change_direction_MouseClick(object sender, MouseEventArgs e)
-        {
-           
-        }
     }
 }

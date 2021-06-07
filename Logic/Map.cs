@@ -15,6 +15,8 @@ public class Map
 
 	public void Simulate(double timeDelta)
 	{
+		//Symulacja porzuszania się statków powietrznych
+
 		List<MovingMapObject> objectsToRemove = new List<MovingMapObject>();
 		if(movingObjects.Count() == 0) throw new MovingObjectExceptions("There's no object on map");
 		foreach (MovingMapObject obj in movingObjects)
@@ -23,21 +25,23 @@ public class Map
 			{
 				obj.Simulate(timeDelta);
 			}
-			if (obj.GetPosition().GetXPosition() < 0 || obj.GetPosition().GetXPosition() > 100)
+			if (obj.GetPosition().GetXPosition() < -0.1 || obj.GetPosition().GetXPosition() > 100.1)
 			{
 				objectsToRemove.Add(obj);
 			}
-			else if (obj.GetPosition().GetYPosition() < 0 || obj.GetPosition().GetYPosition() > 100)
+			else if (obj.GetPosition().GetYPosition() < -0.1 || obj.GetPosition().GetYPosition() > 100.1)
 			{
 				objectsToRemove.Add(obj);
 			}
 		}
+
 
 		foreach (MovingMapObject obj in objectsToRemove)
 		{
 			movingObjects.Remove(obj);
 		}
 
+		//Wykrywanie kolizji między obiektami
 		foreach (MovingMapObject objA in movingObjects)
 		{
 			if (objA.GetStatus() != Status.Collided)
@@ -65,8 +69,6 @@ public class Map
 			}
 		}
 	}
-
-
 
 	public void AddStaticObject(MapObject mapObject)
 	{
@@ -129,7 +131,6 @@ public class Map
 		staticObjects.Add(new MapObject((random.Next() % 1000).ToString(), new Position(random.NextDouble() * 100, random.NextDouble() * 100)));
 	}
 
-
 	public void Save(string fileName)
 	{
 		Stream config = File.Create(fileName);
@@ -171,12 +172,6 @@ public class Map
 			}
 			this.movingObjects = _map.movingObjects;
 			this.staticObjects = _map.staticObjects;
-
 		}
 	}
-
-
-
 }
-
-

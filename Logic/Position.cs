@@ -42,7 +42,7 @@ public class Position
 
 	static public double CalculateDistance(Position a, Position b)
 	{
-		double x = Math.Pow(b.xPosition - a.xPosition,2);
+		double x = Math.Pow(b.xPosition - a.xPosition, 2);
 		double y = Math.Pow(b.yPosition - a.yPosition, 2);
 
 		return Math.Sqrt(y+x);
