@@ -8,12 +8,13 @@ public class Map
 {
 	private List<MapObject> staticObjects = new List<MapObject>();
 	private List<MovingMapObject> movingObjects = new List<MovingMapObject>();
+	[field: NonSerialized()]
 	Random random = new Random();
 
 	public void Simulate(double timeDelta)
 	{
 		List<MovingMapObject> objectsToRemove = new List<MovingMapObject>();
-
+		if(movingObjects.Count() == 0) throw new MovingObjectExceptions("There's no object on map");
 		foreach (MovingMapObject obj in movingObjects)
 		{
 			if (obj.GetStatus() != Status.Collided)

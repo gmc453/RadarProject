@@ -25,6 +25,10 @@ public class MovingMapObject : MapObject
 
 	public MovingMapObject(String name, Position position, double speed, double heading, double altitude, double acceleration, double climbRate, double turnRate) : base(name, position)
 	{
+		if (speed < 0) throw new WrongConstructorValue("Speed lower than 0. ", speed);
+		if (heading < 0) throw new WrongConstructorValue("Heading lower than 0. ", heading);
+		if (altitude < 0) throw new WrongConstructorValue("Altitude lower than 0. ", altitude);
+
 		this.speed = speed;
 		this.heading = heading;
 		this.altitude = altitude;
