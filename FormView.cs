@@ -137,7 +137,11 @@ namespace ProjektPoRadar
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 map.Load(openFileDialog.FileName);
-
+                listBox1.Items.Clear();
+                foreach (MovingMapObject obj in map.GetMovingObjects())
+                {
+                    listBox1.Items.Add(obj.GetName().ToString());
+                }
             }
         }
 
@@ -223,5 +227,6 @@ namespace ProjektPoRadar
 
         }
 
+       
     }
 }

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormView));
             this.timerMoving = new System.Windows.Forms.Timer(this.components);
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -44,7 +45,9 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // timerMoving
@@ -60,11 +63,12 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(120, 355);
             this.listBox1.TabIndex = 0;
- 
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Enabled = false;
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.richTextBox1.Location = new System.Drawing.Point(694, 12);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
@@ -151,7 +155,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
             this.pictureBox1.Enabled = false;
-            this.pictureBox1.Location = new System.Drawing.Point(18, 18);
+            this.pictureBox1.Location = new System.Drawing.Point(25, 25);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(500, 500);
             this.pictureBox1.TabIndex = 14;
@@ -190,12 +194,22 @@
             // richTextBox2
             // 
             this.richTextBox2.Enabled = false;
-            this.richTextBox2.Location = new System.Drawing.Point(832, 460);
+            this.richTextBox2.Location = new System.Drawing.Point(852, 460);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(140, 59);
+            this.richTextBox2.Size = new System.Drawing.Size(120, 59);
             this.richTextBox2.TabIndex = 18;
             this.richTextBox2.Text = "Circle - Glider\nSquare - Ballon\nRectangle - Airplane\nEllipse - Helicopter";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.BackgroundImage")));
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Location = new System.Drawing.Point(642, 350);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(228, 157);
+            this.pictureBox2.TabIndex = 19;
+            this.pictureBox2.TabStop = false;
             // 
             // FormView
             // 
@@ -216,16 +230,17 @@
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBox2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(1000, 570);
             this.MinimumSize = new System.Drawing.Size(1000, 570);
             this.Name = "FormView";
-            this.Text = "Object Moving";
-
+            this.Text = "Radar";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FormView_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormView_MouseClick);
-
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -248,6 +263,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 
