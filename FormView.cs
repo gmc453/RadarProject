@@ -9,10 +9,8 @@ namespace ProjektPoRadar
     public partial class FormView : Form
     {
         Map map = new Map();
-
+        
         private List<Position> positionRoute = new List<Position>();
-
-        private List<Position> temporaryPositionRoute = new List<Position>();
 
         private bool drawRoute = false;
 
@@ -21,14 +19,15 @@ namespace ProjektPoRadar
         public FormView()
         {
             InitializeComponent();
-            
             generateNewMap();
         }
 
         private void FormView_Paint(object sender, PaintEventArgs e)
         {
-            if (!isPaused) { 
-                map.Simulate(0.05);
+            if (!isPaused) {
+                
+                map.Simulate(0.05f);
+                
             }
 
             List<String> movingObjtoRemove = new List<String>();
@@ -123,7 +122,7 @@ namespace ProjektPoRadar
 
                 Position listNewRoutes = new Position((e.X-18)/5, (e.Y - 18) / 5);
 
-                temporaryPositionRoute.Add(listNewRoutes);
+                positionRoute.Add(listNewRoutes);
 
                 newRouteList.Items.Add("X: " + listNewRoutes.GetXPosition() + "Y: " + listNewRoutes.GetYPosition());
             }
@@ -164,7 +163,7 @@ namespace ProjektPoRadar
 
             drawingBoxOnOf.Visible = true;
 
-            temporaryPositionRoute.Clear();
+            positionRoute.Clear();
         }
 
         private void applyNewRouteButton_Click(object sender, EventArgs e)
@@ -175,7 +174,6 @@ namespace ProjektPoRadar
 
             drawingBoxOnOf.Visible = false;
 
-            positionRoute = temporaryPositionRoute;
 
             foreach (MovingMapObject obj in map.GetMovingObjects())
             {
@@ -188,7 +186,7 @@ namespace ProjektPoRadar
                 }
             }
 
-
+            positionRoute = new List<Position>();
             newRouteList.Items.Clear();
         }
 

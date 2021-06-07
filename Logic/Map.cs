@@ -36,7 +36,6 @@ public class Map
 			}
 		}
 
-
 		foreach (MovingMapObject obj in objectsToRemove)
 		{
 			movingObjects.Remove(obj);

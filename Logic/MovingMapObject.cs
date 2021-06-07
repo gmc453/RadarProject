@@ -73,7 +73,7 @@ public class MovingMapObject : MapObject
 
 	public void Simulate(double timeDelta) {
 
-		if (route.Count != 0 && Position.CalculateDistance(GetPosition(), route[0]) < 6.0) {
+		if (route.Count != 0 && Position.CalculateDistance(GetPosition(), route[0]) < 2.0) {
 			route.RemoveAt(0);
 			if (route.Count == 0) {
 				return;
