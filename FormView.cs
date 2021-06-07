@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,50 +7,98 @@ namespace ProjektPoRadar
 {
     public partial class FormView : Form
     {
-        private int _x;
-        private int _y;
-        private int xSizePlane, ySizePlane;
+        Map map = new Map();
+
+        private List<Position> positionRoute = new List<Position>();
+
+        private List<Position> temporaryPositionRoute = new List<Position>();
+
+        private bool drawRoute = false;
 
         public FormView()
         {
             InitializeComponent();
 
-            _x = 50;
-            _y = 50;
-            xSizePlane = 20;
-            ySizePlane = 20;
+            for(int i = 0; i < 1 ; i++)
+            {
+                map.AddRandomMovingObject();
+            }          
         }
 
         private void FormView_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(Brushes.Blue, _x, _y, xSizePlane, ySizePlane);
-            // e.Graphics.FillRectangle(Brushes.Red, 250, 250, 10, 10);
-            AirPort(e, 250, 250, 10, 10);
+            map.Simulate(0.05);
 
-            Pen redPen = new Pen(Color.Blue, 5);
-            e.Graphics.DrawLine(redPen, _x + (xSizePlane / 2), _y + (ySizePlane / 2), 255.0F, 255.0F);
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                listBox1.Items.Add(obj.GetName().ToString());
+            }
 
-            AirPort(e, 200, 150, 10, 10);
-            AirPort(e, 400, 20, 10, 10);
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                Brush Color;
 
-            e.Graphics.DrawLine(redPen, 205.0F, 155.0F, 405.0F, 24.0F);
+                if (obj.GetStatus() == Status.Safe)
+                {
+                    Color = Brushes.Green;          
+                }
+                else if (obj.GetStatus() == Status.InDanger)
+                {
+                    Color = Brushes.Yellow;
+                }
+                else
+                {                 
+                    Color = Brushes.Red;
+                }
+                if(obj is Glider)
+                {
+                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 15, 15);
+                }
+                if (obj is Balloon)
+                {
+                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 15, 15);
+                }
+                if (obj is Helicopter)
+                {
+                    e.Graphics.FillEllipse(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 10, 15);
+                }
+                if (obj is Airplane)
+                {
+                    e.Graphics.FillRectangle(Color, (float)obj.GetPosition().GetXPosition() * 5, (float)obj.GetPosition().GetYPosition() * 5, 10, 15);
+                }
+
+            }
+
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                if (listBox1.SelectedItem != null)
+                {
+                    if (obj.GetName() == listBox1.SelectedItem.ToString())
+                    {
+                        richTextBox1.Text = "Name: " + obj.GetName() + "\nX:\n" + obj.GetPosition().GetXPosition() + "\nY:\n" + obj.GetPosition().GetYPosition() + "\nStatus: " + obj.GetStatus();
+                    }
+                }
+            }
         }
 
         private void timerMoving_Tick(object sender, EventArgs e)
         {
-            if (_x != 245 && _y != 245)
-            {
-                _x += 5;
-                _y += 5;
-            }
-
-
             Invalidate();
         }
 
-        private void AirPort(PaintEventArgs e, int xAxis, int yAxis, int width, int height)
+        private void FormView_MouseMove(object sender, MouseEventArgs e)
         {
-            e.Graphics.FillRectangle(Brushes.Red, xAxis, yAxis, width, height);
+            //listBox1.Text = " X: " + e.X + " Y: " + e.Y;
+        }
+
+        private void FormView_MouseUp(object sender, MouseEventArgs e)
+        {
+            //listBox1.Text = " X: " + e.X + " Y: " + e.Y;
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void FormView_Load(object sender, EventArgs e)
@@ -57,15 +106,69 @@ namespace ProjektPoRadar
 
         }
 
-        public Point MovePointTowards(Point a, Point b, double distance)
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            var vector = new Point(b.X - a.X, b.Y - a.Y);
-            var length = Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-            // var unitVector = new Point(vector.X / length, vector.Y / length);
-            // return new Point(a.X + (unitVector.X * distance), a.Y + unitVector.Y * distance);
-            return a;
+
         }
 
+        private void Change_direction_Click(object sender, EventArgs e)
+        {
+            positionRoute = temporaryPositionRoute;
 
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                if (listBox1.SelectedItem != null)
+                {
+                    if (obj.GetName() == listBox1.SelectedItem.ToString())
+                    {
+                        obj.SetNewRoute(positionRoute);
+                    }
+                }
+            }
+
+            Change_direction.Enabled = false;
+
+            newRouteList.Items.Clear();
+        }
+
+        private void FormView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(drawRoute == true)
+            {
+                Position listNewRoutes = new Position(e.X/5, e.Y/5);
+
+                temporaryPositionRoute.Add(listNewRoutes);
+
+                newRouteList.Items.Add("X: " + listNewRoutes.GetXPosition() + "Y: " + listNewRoutes.GetYPosition());
+            }
+        }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            drawRoute = true;
+
+            drawingBoxOnOf.Visible = true;
+
+            temporaryPositionRoute.Clear();
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            drawRoute = false;
+
+            Change_direction.Enabled = true;
+
+            drawingBoxOnOf.Visible = false;
+        }
+
+        private void newRouteList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Change_direction_MouseClick(object sender, MouseEventArgs e)
+        {
+           
+        }
     }
 }
