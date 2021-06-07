@@ -159,6 +159,11 @@ namespace ProjektPoRadar
         private void startNewRouteButton_Click(object sender, EventArgs e)
         {
             //zaczęcie tworzenia nowej trasy
+            if (listBox1.SelectedItem == null)
+            {
+                return;
+            }
+            
             drawRoute = true;
 
             drawingBoxOnOf.Visible = true;
