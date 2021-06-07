@@ -19,20 +19,42 @@ namespace ProjektPoRadar
         {
             InitializeComponent();
 
-            for(int i = 0; i < 1 ; i++)
+            for(int i = 0; i < 10 ; i++)
             {
                 map.AddRandomMovingObject();
-            }          
+            }
+            foreach (MovingMapObject obj in map.GetMovingObjects())
+            {
+                listBox1.Items.Add(obj.GetName().ToString());
+            }
         }
 
         private void FormView_Paint(object sender, PaintEventArgs e)
         {
             map.Simulate(0.05);
 
-            foreach (MovingMapObject obj in map.GetMovingObjects())
+            List<String> movingObjtoRemove = new List<String>();
+
+            foreach (String str in listBox1.Items)
             {
-                listBox1.Items.Add(obj.GetName().ToString());
+                bool exist=false;
+                foreach (MovingMapObject obj in map.GetMovingObjects())
+                {
+                    if (str == obj.GetName().ToString()) {
+                        exist = true;
+                    }
+                }
+                if (!exist) {
+                    movingObjtoRemove.Add(str);
+                }
             }
+            foreach (String str in movingObjtoRemove) {
+                listBox1.Items.Remove(str);
+            }
+
+
+
+        
 
             foreach (MovingMapObject obj in map.GetMovingObjects())
             {
