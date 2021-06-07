@@ -46,6 +46,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -59,9 +60,9 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(542, 12);
+            this.listBox1.Location = new System.Drawing.Point(542, 25);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(120, 355);
+            this.listBox1.Size = new System.Drawing.Size(120, 342);
             this.listBox1.TabIndex = 0;
             // 
             // richTextBox1
@@ -69,10 +70,10 @@
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.richTextBox1.Location = new System.Drawing.Point(694, 12);
+            this.richTextBox1.Location = new System.Drawing.Point(694, 25);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(140, 222);
+            this.richTextBox1.Size = new System.Drawing.Size(140, 209);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
             // 
@@ -124,9 +125,9 @@
             // newRouteList
             // 
             this.newRouteList.FormattingEnabled = true;
-            this.newRouteList.Location = new System.Drawing.Point(852, 12);
+            this.newRouteList.Location = new System.Drawing.Point(852, 25);
             this.newRouteList.Name = "newRouteList";
-            this.newRouteList.Size = new System.Drawing.Size(120, 355);
+            this.newRouteList.Size = new System.Drawing.Size(120, 342);
             this.newRouteList.TabIndex = 11;
             // 
             // saveButton
@@ -211,11 +212,21 @@
             this.pictureBox2.TabIndex = 19;
             this.pictureBox2.TabStop = false;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(22, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(285, 13);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "Kamil Piętka, Dominik Postołowicz, Łukasz Płoński [PS10]\r\n";
+            // 
             // FormView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 531);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -264,6 +275,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label label2;
     }
 }
 

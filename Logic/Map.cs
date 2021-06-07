@@ -51,7 +51,7 @@ public class Map
 
 			foreach (MovingMapObject objB in movingObjects)
 			{
-				if (!objA.Equals(objB) && objA.GetStatus() != Status.Collided)
+				if (!objA.Equals(objB) && objA.GetStatus() != Status.Collided && objB.GetStatus() != Status.Collided)
 				{
 					double distance = Position.CalculateDistance(objA.GetPosition(), objB.GetPosition());
 					double altitudeDifference = Math.Abs(objA.GetAltitude() - objB.GetAltitude());
